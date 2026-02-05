@@ -1,0 +1,14 @@
+# GNUstep
+*.o
+*.so
+*.d
+derived_src/
+obj/
+obj.install/
+build/
+*.app
+
+# IDE
+.idea/
+*.xcuserstate
+*.xcworkspacedata
