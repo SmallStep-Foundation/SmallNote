@@ -49,4 +49,8 @@ SmallNote_LDFLAGS = $(SMALLSTEP_LIB_PATH) $(SMALLSTEP_LDFLAGS) -Wl,--allow-shlib
 SmallNote_ADDITIONAL_LDFLAGS = $(SMALLSTEP_LIB_PATH) $(SMALLSTEP_LDFLAGS) -lSmallStep
 SmallNote_TOOL_LIBS = -lSmallStep -lobjc
 
+before-all::
+	mkdir -p Resources && cp -f ../SmallStepLib/Resources/logo.png Resources/logo.png 2>/dev/null || true
+SmallNote_RESOURCE_FILES = Resources/logo.png
+
 include $(GNUSTEP_MAKEFILES)/application.make

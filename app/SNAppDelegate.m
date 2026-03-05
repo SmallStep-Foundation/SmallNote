@@ -39,6 +39,9 @@
 #if !TARGET_OS_IPHONE
     SSMainMenu *menuBuilder = [[SSMainMenu alloc] init];
     menuBuilder.appName = @"SmallNote";
+    menuBuilder.aboutAppName = @"SmallNote";
+    menuBuilder.aboutVersion = @"1.0";
+    menuBuilder.aboutTarget = self;
     NSArray *items = [NSArray arrayWithObjects:
         [SSMainMenuItem itemWithTitle:@"New Note" action:@selector(newNote:) keyEquivalent:@"n" modifierMask:NSCommandKeyMask target:self],
         [SSMainMenuItem itemWithTitle:@"Open Notes Folder…" action:@selector(openNotesFolder:) keyEquivalent:@"o" modifierMask:NSCommandKeyMask target:self],
@@ -68,6 +71,11 @@
 - (void)toggleTodoAtCurrentLine:(id)sender {
     (void)sender;
     [self.mainWindow toggleTodoAtCurrentLine];
+}
+
+- (void)showAbout:(id)sender {
+    (void)sender;
+    [SSAboutPanel showWithAppName:@"SmallNote" version:@"1.0"];
 }
 
 - (void)dealloc {
