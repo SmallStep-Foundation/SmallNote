@@ -49,23 +49,23 @@ static NSString *s_customNotesDir = nil;
 }
 
 - (NSString *)notesDirectory {
-    NSString *base = s_customNotesDir;
-    if (base == nil || base.length == 0) {
-        id<SSFileSystem> fs = [SSFileSystem sharedFileSystem];
-        NSString *appSupport = [fs applicationSupportDirectory];
-        NSString *bundleId = [[NSBundle mainBundle] bundleIdentifier];
-        NSString *appName = bundleId.length ? bundleId : kDefaultAppName;
-        base = [appSupport stringByAppendingPathComponent:appName];
+    if (s_customNotesDir != nil && s_customNotesDir.length > 0) {
+        NSString *notesDir = [s_customNotesDir stringByAppendingPathComponent:kNotesSubdir];
+        NSError *err = nil;
+        if (![[NSFileManager defaultManager] fileExistsAtPath:notesDir]) {
+            [[NSFileManager defaultManager] createDirectoryAtPath:notesDir
+                                      withIntermediateDirectories:YES
+                                                       attributes:nil
+                                                            error:&err];
+        }
+        return notesDir;
     }
-    NSString *notesDir = [base stringByAppendingPathComponent:kNotesSubdir];
+    id<SSFileSystem> fs = [SSFileSystem sharedFileSystem];
+    NSString *bundleId = [[NSBundle mainBundle] bundleIdentifier];
+    NSString *appName = bundleId.length ? bundleId : kDefaultAppName;
     NSError *err = nil;
-    if (![[NSFileManager defaultManager] fileExistsAtPath:notesDir]) {
-        [[NSFileManager defaultManager] createDirectoryAtPath:notesDir
-                                  withIntermediateDirectories:YES
-                                                   attributes:nil
-                                                        error:&err];
-    }
-    return notesDir;
+    NSString *notesDir = [fs applicationSupportSubdirectoryForAppName:appName subpath:kNotesSubdir create:YES error:&err];
+    return notesDir ? notesDir : [fs applicationSupportDirectory];
 }
 
 - (void)setNotesDirectory:(NSString *)path {
