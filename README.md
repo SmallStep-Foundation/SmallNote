@@ -11,29 +11,32 @@ A modern note-taking app (Obsidian-lite / Apple Notes–style) with to-dos and t
 ## Dependencies
 
 - **GNUStep** (base, gui)
-- **SmallStep** (../SmallStep): app lifecycle, file system, main menu, file dialog
+- **SmallStepLib** (`../SmallStepLib`): app lifecycle, file system, main menu, file dialog
 
 Core logic uses **Foundation only** (no extra FOSS libraries): note storage via SmallStep’s `SSFileSystem`, checkbox parsing in Objective-C.
 
-## Build (Linux/GNUStep)
+## Build
 
-1. Build SmallStep first (must link with libobjc for NSView+SSTag; SmallStep GNUmakefile sets `SmallStep_LIBRARIES_DEPEND_UPON = -lobjc`):
-   ```bash
-   . /usr/share/GNUstep/Makefiles/GNUstep.sh
-   cd ../SmallStep && make && make install
-   cd ../SmallNote
-   ```
-2. Build SmallNote:
-   ```bash
-   . /usr/share/GNUstep/Makefiles/GNUstep.sh
-   make
-   ```
-   If you see undefined reference to `objc_getAssociatedObject` when linking, ensure SmallStep was rebuilt with `SmallStep_LIBRARIES_DEPEND_UPON = -lobjc` so that `libSmallStep.so` has `libobjc` in its NEEDED list. SmallNote uses `-Wl,--allow-shlib-undefined` so the linker allows SmallStep’s runtime dependency on libobjc to be resolved at load time.
-3. Run:
-   ```bash
-   openapp ./SmallNote.app
-   ```
-   Or: `./SmallNote.app/SmallNote`
+SmallStepLib is built first automatically by [`../build_all.sh`](../build_all.sh); to build this app alone:
+
+```bash
+. /tmp/gnustep-toolchain/setup-env.sh    # or your GNUstep env (GNUstep.sh)
+make -C ../SmallStepLib CC=clang         # once
+make CC=clang                            # from this directory
+```
+
+## Run
+
+```bash
+openapp ./SmallNote.app                  # from this directory
+# or: ./SmallNote.app/SmallNote
+```
+
+## Test
+
+```bash
+make -f Tests/GNUmakefile CC=clang all && ./Tests/obj/test_SmallNote
+```
 
 ## Project layout
 
@@ -46,6 +49,12 @@ Core logic uses **Foundation only** (no extra FOSS libraries): note storage via 
 - `ui/NoteEditorController` – load/save text, toggle to-do at current line.
 
 See **SMALLCORE.md** for shared patterns across Small* apps and possible refactoring into a common core.
+
+## HiDPI
+
+GNUstep renders at 1:1 pixels; on high-DPI screens set the `GSScaleFactor`
+user default once to scale every GNUstep app (see the workspace
+[README](../README.md#hidpi-displays)).
 
 ## License
 

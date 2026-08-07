@@ -47,9 +47,9 @@ This document summarizes common functionality used by **SmallNote**, **SmallBarc
 ### 5. Build system (GNUmakefile)
 
 - All use `GNUSTEP_MAKEFILES`, `common.make`, `application.make` (or framework for SmallStep).
-- SmallStep path: `-I../SmallStep/SmallStep/Core` (and Platform/Linux); link `-lSmallStep` and optional rpath.
+- SmallStep path: apps `-include` the shared **`SmallStepLib/GNUmakefile.include`** (from an app dir: `-include ../SmallStepLib/GNUmakefile.include`; from a `Tests/` dir: `-include ../../SmallStepLib/GNUmakefile.include`). It is location-independent and provides `SMALLSTEP_INCLUDE_DIRS`, `SMALLSTEP_LIB_PATH` and `SMALLSTEP_LDFLAGS`; each app then adds `-lSmallStep` to its own `ADDITIONAL_LDFLAGS` / `TOOL_LIBS`.
 
-**Recommendation**: Extract a small snippet or script for “link to SmallStep from a sibling app” (include path, TOOL_LIBS, LDFLAGS) so new Small* apps can paste and adjust.
+**Recommendation**: Done — the shared snippet is `SmallStepLib/GNUmakefile.include`; new Small* apps (and their test makefiles) just `-include` it and paste the three-line link block.
 
 ## What could become “SmallCore” (or live in SmallStep)
 
